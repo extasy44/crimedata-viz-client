@@ -63,3 +63,32 @@ switchInput.addEventListener('input', function () {
     localStorage.setItem('dark-mode', 'true');
   }
 });
+
+function getColour(value) {
+  const color_pallette = {
+    0: '#FFEDA0',
+    1: '#FED976',
+    2: '#FEB24C',
+    3: '#FD8D3C',
+    4: '#FC4E2A',
+    5: '#E31A1C',
+    6: '#BD0026',
+    7: '#800026',
+    8: '#753d34',
+    9: '#582a2a',
+  };
+
+  const val = Math.floor(value);
+  if (color_pallette[val]) return color_pallette[val];
+  else return '#582a2a';
+}
+
+const loader = document.querySelector('.loading');
+
+function showLoader() {
+  loader.style.display = 'block';
+}
+
+function hideLoader() {
+  loader.style.display = 'none';
+}

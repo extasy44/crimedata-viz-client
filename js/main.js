@@ -1,27 +1,3 @@
-const apiUrl =
-  'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson';
-const vicSurburbs =
-  'https://data.gov.au/geoserver/vic-local-government-areas-psma-administrative-boundaries/wfs?request=GetFeature&typeName=ckan_bdf92691_c6fe_42b9_a0e2_a4cd716fa811&outputFormat=json';
-
-function getColour(value) {
-  const color_pallette = {
-    0: '#FFEDA0',
-    1: '#FED976',
-    2: '#FEB24C',
-    3: '#FD8D3C',
-    4: '#FC4E2A',
-    5: '#E31A1C',
-    6: '#BD0026',
-    7: '#800026',
-    8: '#753d34',
-    9: '#582a2a',
-  };
-
-  const val = Math.floor(value);
-  if (color_pallette[val]) return color_pallette[val];
-  else return '#582a2a';
-}
-
 function createMap(LGAData) {
   const vic_lga = L.geoJSON(LGAData, {
     style: style,
@@ -79,7 +55,7 @@ function createMap(LGAData) {
 
   L.control
     .layers(baseMaps, overlayMaps, {
-      collapsed: true,
+      collapsed: false,
     })
     .addTo(myMap);
 
@@ -90,10 +66,12 @@ function createMap(LGAData) {
     const legends = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     legends.forEach((legend, i) => {
-      const next = legends[i + 1] ? '&ndash; ' + legends[i + 1] + '<br>' : '+';
+      const next = legends[i + 1]
+        ? '&ndash; ' + legends[i + 1] * 1000 + '<br>'
+        : '+';
       div.innerHTML += `<div class="legend-range" style="background: ${getColour(
         legend
-      )}">${legends[i]} ${next}</div>`;
+      )}">${legends[i] * 1000} ${next}</div>`;
     });
 
     return div;
@@ -111,17 +89,14 @@ function createMap(LGAData) {
 
   // method that we will use to update the control based on feature properties passed
   info.update = function (props) {
-    this._div.innerHTML =
-      '<h4>Victoria Crime Rate by LGA</h4>' +
-      (props
-        ? '<b>' +
-          props.lga_pid +
-          ' ' +
-          props.lg_ply_pid +
-          '</b><br />' +
-          props.vic_lga__3 +
-          ' incidents'
-        : 'Hover over a LGA');
+    this._div.innerHTML = props
+      ? '<b>' +
+        props.lga_pid +
+        ' ' +
+        props.lg_ply_pid +
+        '</b><br />' +
+        props.vic_lga__3
+      : 'Hover over a LGA';
   };
 
   info.addTo(myMap);
@@ -133,7 +108,7 @@ function createMap(LGAData) {
         properties: { lga_pid, vic_lga__3 },
       },
     } = e.target;
-    console.log(lga_pid, vic_lga__3);
+
     layer.setStyle({
       weight: 2,
       color: '#BD0026',
@@ -155,6 +130,7 @@ function createMap(LGAData) {
 
   function zoomToFeature(e) {
     myMap.fitBounds(e.target.getBounds());
+    createStats(e.target.feature);
   }
 
   function onEachFeature(feature, layer) {
@@ -171,17 +147,53 @@ function createMap(LGAData) {
       weight: 1,
       opacity: 1,
       color: 'white',
-      dashArray: '5',
+      dashArray: '3',
       fillOpacity: 0.6,
     };
   }
 }
 
+function createStats(feature) {
+  const {
+    properties: { lga_pid, vic_lga__3, vic_lga__5, vic_lga_sh },
+  } = feature;
+  const statDiv = document.querySelector('.stat-bar');
+
+  const statText = `
+  <ul><li>ID : ${lga_pid}</li><li>Name : ${vic_lga__3}</li><li>Level : ${vic_lga__5}</li><li>ID : ${lga_pid}</li><li>Name : ${vic_lga__3}</li><li>Level : ${vic_lga__5}</li></ul>
+  `;
+
+  statDiv.innerHTML = statText;
+  statDiv.classList.remove('highlighting');
+  void statDiv.offsetWidth;
+  statDiv.classList.add('highlighting');
+}
+
+async function onYearChange() {
+  const year = document.querySelector('#year-select').value;
+  showLoader();
+  setTimeout(function () {
+    console.log(year);
+    hideLoader();
+  }, 2000);
+}
+
 const app = async () => {
+  showLoader();
   const vicLgaData = await d3.json(vicSurburbs);
+  const initialStats = {
+    properties: {
+      lga_pid: 100,
+      vic_lga__3: 'Victoria',
+      vic_lga__5: '3',
+      vic_lga_sh: '2015-09-21',
+    },
+  };
 
   console.log(vicLgaData);
   createMap(vicLgaData);
+  createStats(initialStats);
+  hideLoader();
 };
 
 app();

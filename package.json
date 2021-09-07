@@ -1,5 +1,5 @@
 {
-  "name": "web-design-challenge",
+  "name": "crime-data-viz",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,17 +12,9 @@
     "compress:css": "node-sass css/style.prefix.css css/style.css --output-style compressed",
     "build:css": "npm-run-all compile:sass prefix:css compress:css"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/extasy44/web-design-challenge.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/extasy44/web-design-challenge/issues"
-  },
-  "homepage": "https://github.com/extasy44/web-design-challenge#readme",
   "devDependencies": {
     "autoprefixer": "^7.1.4",
     "node-sass": "^4.5.3",

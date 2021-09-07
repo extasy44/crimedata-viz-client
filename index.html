@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Victora LGA Crime Rate Incidents</title>
+    <title>Safest Place to live in Victoria</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -9,7 +9,7 @@
     <link rel="shortcut icon" type="image/png" href="img/favicon.png" />
   </head>
 
-  <body>
+  <body class="collapsed">
     <svg style="display: none">
       <symbol id="logo" viewBox="0 0 140 59">
         <g>
@@ -150,11 +150,6 @@
     </svg>
     <header class="page-header">
       <nav>
-        <a href="#0" aria-label="forecastr logo" class="logo">
-          <svg width="140" height="49">
-            <use xlink:href="#logo"></use>
-          </svg>
-        </a>
         <button
           class="toggle-mob-menu"
           aria-expanded="false"
@@ -269,16 +264,18 @@
 
     <section class="page-content">
       <section class="search-and-user">
-        <form>
-          <input type="search" placeholder="Search..." />
-          <button type="submit" aria-label="submit form">
-            <svg aria-hidden="true">
-              <use xlink:href="#search"></use>
-            </svg>
-          </button>
-        </form>
+        <div class="year-selection">
+          <div class="year-label">SELECTED YEAR :</div>
+          <select id="year-select" onchange="onYearChange()">
+            <option value="2017">2017</option>
+            <option value="2018">2018</option>
+            <option value="2019">2019</option>
+            <option value="2020">2020</option>
+            <option value="2021" selected>2021</option>
+          </select>
+        </div>
         <div class="admin-profile">
-          <span class="greeting">Hello admin</span>
+          <span class="greeting">Hello Team</span>
           <div class="notifications">
             <span class="badge">1</span>
             <svg>
@@ -307,11 +304,24 @@
             crossorigin=""
           ></script>
         </article>
-        <article></article>
-        <article></article>
-        <article></article>
-        <article></article>
-        <article></article>
+        <article>
+          <h4>Criminal Incident Rate Per 100,000 population</h4>
+          <div class="stat-bar"></div>
+        </article>
+        <article>
+          <div id="bar"></div>
+        </article>
+        <article>
+          <div id="bubble"></div>
+        </article>
+        <article>
+          <p>Top 10 LGAs with Low Crime Rate or Incidents numbers</p>
+        </article>
+        <article>
+          <p>
+            Yearly Total Incidents Number or Rate for Vicoria(Timeline Series)
+          </p>
+        </article>
       </section>
       <footer class="page-footer">
         <span
@@ -321,9 +331,15 @@
       </footer>
     </section>
 
+    <div class="loading style-2">
+      <div class="loading-wheel"></div>
+    </div>
     <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="samples.json"></script>
     <script type="text/javascript" src="js/util.js"></script>
     <script type="text/javascript" src="js/config.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
   </body>
 </html>
